@@ -5,22 +5,31 @@ import google.generativeai as genai
 import streamlit as st
 from settingUp import yourKey
 import time
-currentSessionHistory = []
-def runDuckie(model):
-    st.title("Duckie!")
-    prompt = st.chat_input("Quack Quack Quack!")
 
-    if "messages" not in st.session_state.keys():  # Initialize the chat message history
-        st.session_state.messages = [
-            {"role": "assistant", "content": "Ask me a question about Streamlit's open-source Python library!"}
-        ]
-        model.start_chat(history=[])
-        with st.sidebar:
-            st.title('History')
+def runDuckie(model,currentSessionHistory):
+    def runDuckie(model, currentSessionHistory):
+        convo = model
+        st.title("Duckie 🦆")
+        prompt = st.chat_input("Ask me something, or say 'History' to see our old chats!")
 
-        for message in st.session_state.messages:
-            with st.chat_message(message["role"]):
-                st.write(message["Content"])
+        if prompt:
+            currentSessionHistory = currentSessionHistory
+
+        if prompt == "History":
+            st.markdown("Quack! Here is our convo so far!")
+            st.markdown(currentSessionHistory)
+        else:
+            convo.send_message(prompt)
+            with st.spinner('Thinking'):
+                time.sleep(2)
+            st.success("Success! Your input was: " + prompt)
+            st.markdown(prompt)
+            lastText = "" + convo.last.text
+            currentSessionHistory.append("Prompt: " + prompt + " Response: " + lastText)
+            st.markdown(convo.last.text)
+            # Adds the history to the model
+            convo.history.append(prompt)
+
 
 
 
