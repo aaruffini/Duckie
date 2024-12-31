@@ -64,7 +64,7 @@ chat = model.start_chat(
 )
 
 userPrompt = st.chat_input("Talk with Duckie!")
-
+#fff
 #Interaction between duckie and user
 if userPrompt:
     response = chat.send_message(userPrompt)
